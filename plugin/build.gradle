@@ -1,0 +1,29 @@
+apply plugin: 'groovy'
+apply from: rootProject.file("maven.gradle")
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile gradleApi()
+    compile localGroovy()
+    compile 'com.android.tools.build:gradle:3.3.2'
+//    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile project(':writer')
+    compile project(':reader')
+    compile project(':verify')
+}
+
+// 一定要记得使用交叉编译选项，因为我们可能用很高的JDK版本编译，为了让安装了低版本的同学能用上我们写的插件，必须设定source和target
+compileGroovy {
+    targetCompatibility = rootProject.javaVersion
+    sourceCompatibility = rootProject.javaVersion
+    options.encoding = "UTF-8"
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file:///Users/zerowolfhwang/.m2/repository")
+        pom.groupId = "channel"
+        pom.artifactId = "v2"
+        pom.version = "2.0"
+    }
+}
